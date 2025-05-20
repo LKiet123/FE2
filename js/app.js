@@ -115,11 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
       stream.getTracks().forEach(track => track.stop()); // Don't keep the stream open
       
       return true;
-    } catch (error) {
-      console.error('Lỗi khi kiểm tra thiết bị:', error);
-      showToast('Không thể truy cập camera. Vui lòng cấp quyền camera cho ứng dụng.', 5000);
-      return false;
-    }
+    } 
+    // catch (error) {
+    //   console.error('Lỗi khi kiểm tra thiết bị:', error);
+    //   showToast('Không thể truy cập camera. Vui lòng cấp quyền camera cho ứng dụng.', 5000);
+    //   return false;
+    // }
+    catch (error) {
+  console.error('Chi tiết lỗi camera:', error.name, error.message);
+  showToast(`Lỗi camera: ${error.name} - ${error.message}`, 5000);
+  return false;
+}
   }
   
   function initializeApp() {
