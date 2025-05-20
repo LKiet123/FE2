@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let sceneData = [];
   let actionHistory = [];
   let currentActionIndex = -1;
+  let arContext = null;
 
   // 1. Thay đổi mô hình
   modelSelector.addEventListener('change', (e) => {
@@ -226,55 +227,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Kiểm tra hỗ trợ WebGL
+  function checkWebGLSupport() {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!window.WebGLRenderingContext && 
+             (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+    } catch(e) {
+      return false;
+    }
+  }
 
-//   const arContext = sceneEl.renderer.xr.getSession();
-if (arContext) {
-    arContext.addEventListener('event', () => console.log('Event triggered'));
-} else {
-    console.error("arContext chưa được khởi tạo!");
-}
+  // Kiểm tra model tải
+  modelEntity.addEventListener('model-loaded', () => {
+    console.log('Model đã tải thành công!');
+  });
 
- function setupAR() {
-    let arContext = initializeAR();
-    console.log(arContext);
-}
-setupAR();
- async function setupAR() {
-    arContext = await initializeAR();
-    console.log(arContext);
-}
-setupAR();
+  modelEntity.addEventListener('error', (err) => {
+    console.error('Lỗi tải model:', err);
+  });
 
+  // Yêu cầu quyền camera
+  async function requestCameraPermission() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      return true;
+    } catch(err) {
+      console.error('Không thể truy cập camera:', err);
+      return false;
+    }
+  }
 
-let arContext;
-arContext = initializeAR(); // Assign a value before using it
-console.log(arContext);
+  // Khởi tạo AR
+  async function initializeAR() {
+    if (!checkWebGLSupport()) {
+      alert('Thiết bị không hỗ trợ WebGL');
+      return;
+    }
 
-if (_this && typeof _this.dispatchEvent === 'function') {
-    _this.dispatchEvent(new Event('customEvent'));
-} else {
-    console.error('_this is not an event target:', _this);
-}
-const self = this;
-someFunction(() => {
-    self.dispatchEvent(new Event('customEvent'));
-});
-function initAR() {
-    let arContext = {}; // Khởi tạo đúng cách
-    console.log(arContext);
-}
-initAR();
-if (arContext && typeof arContext.addEventListener === 'function') {
-    arContext.addEventListener('event', () => console.log('Event triggered'));
-} else {
-    console.error('arContext is not an event target:', arContext);
-}
-const sceneEl = document.querySelector('a-scene');
- arContext = sceneEl.renderer.xr.getSession();
-if (arContext) {
-    arContext.addEventListener('event', () => console.log('Event triggered'));
-} else {
-    console.error("arContext is not initialized!");
-}
+    const hasPermission = await requestCameraPermission();
+    if (!hasPermission) {
+      alert('Vui lòng cấp quyền camera để sử dụng AR');
+      return;
+    }
 
+    // Thêm loading indicator
+    const loading = document.createElement('div');
+    loading.style.position = 'fixed';
+    loading.style.top = '0';
+    loading.style.left = '0';
+    loading.style.width = '100%';
+    loading.style.height = '100%';
+    loading.style.background = 'rgba(0,0,0,0.7)';
+    loading.style.color = 'white';
+    loading.style.display = 'flex';
+    loading.style.justifyContent = 'center';
+    loading.style.alignItems = 'center';
+    loading.style.zIndex = '1000';
+    loading.innerHTML = '<h2>Đang tải ứng dụng AR...</h2>';
+    document.body.appendChild(loading);
+
+    // Kiểm tra AR context
+    try {
+      const sceneEl = document.querySelector('a-scene');
+      arContext = sceneEl.renderer.xr.getSession();
+      
+      if (arContext && typeof arContext.addEventListener === 'function') {
+        arContext.addEventListener('event', () => console.log('Event triggered'));
+      } else {
+        console.warn('AR context không khả dụng hoặc không hỗ trợ event listener');
+      }
+    } catch (error) {
+      console.error('Lỗi khi khởi tạo AR context:', error);
+    }
+  }
+
+  // Gọi hàm khởi tạo
+  initializeAR();
 });
