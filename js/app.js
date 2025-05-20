@@ -272,20 +272,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Thêm loading indicator
-    const loading = document.createElement('div');
-    loading.style.position = 'fixed';
-    loading.style.top = '0';
-    loading.style.left = '0';
-    loading.style.width = '100%';
-    loading.style.height = '100%';
-    loading.style.background = 'rgba(0,0,0,0.7)';
-    loading.style.color = 'white';
-    loading.style.display = 'flex';
-    loading.style.justifyContent = 'center';
-    loading.style.alignItems = 'center';
-    loading.style.zIndex = '1000';
-    loading.innerHTML = '<h2>Đang tải ứng dụng AR...</h2>';
-    document.body.appendChild(loading);
+    // const loading = document.createElement('div');
+    // loading.style.position = 'fixed';
+    // loading.style.top = '0';
+    // loading.style.left = '0';
+    // loading.style.width = '100%';
+    // loading.style.height = '100%';
+    // loading.style.background = 'rgba(0,0,0,0.7)';
+    // loading.style.color = 'white';
+    // loading.style.display = 'flex';
+    // loading.style.justifyContent = 'center';
+    // loading.style.alignItems = 'center';
+    // loading.style.zIndex = '1000';
+    // loading.innerHTML = '<h2>Đang tải ứng dụng AR...</h2>';
+    // document.body.appendChild(loading);
 
     // Kiểm tra AR context
     try {
@@ -304,4 +304,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Gọi hàm khởi tạo
   initializeAR();
+
+  if (navigator.xr) {
+    console.log("WebXR is supported");
+} else {
+    console.error("WebXR is not supported on this browser");
+}
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => console.log("Camera access granted"))
+    .catch(error => console.error("Camera access denied", error));
+
 });
