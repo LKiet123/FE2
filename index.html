@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AR Nội Thất</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- A-Frame & AR.js -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/2.2.1/aframe/build/aframe-ar.min.js"></script>
+  <script src="https://unpkg.com/aframe-drag-component/dist/aframe-drag-component.min.js"></script>
+  <script src="https://unpkg.com/aframe-environment-component/dist/aframe-environment-component.min.js"></script>
+  <!-- <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script> -->
+  
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+
+<body style="margin: 0; overflow: hidden;">
+  <!-- Giao diện điều khiển -->
+  <div id="ui" style="position: fixed; top: 10px; left: 10px; z-index: 10; background: rgba(255,255,255,0.8); padding: 10px; border-radius: 8px; max-width: 300px;">
+    <h3 style="margin-top: 0;">AR Nội Thất</h3>
+    
+    <label>Chọn nội thất:</label>
+    <select id="modelSelector">
+      <option value="sofa">Sofa</option>
+      <option value="table">Bàn</option>
+      <option value="chair">Ghế</option>
+      <option value="lamp">Đèn</option>
+    </select><br><br>
+    
+    <label>Thay đổi kích thước:</label>
+    <input type="range" id="scaleSlider" min="0.5" max="2" step="0.1" value="1"><br><br>
+    
+    <label>Màu sắc:</label>
+    <input type="color" id="colorPicker" value="#ffffff"><br><br>
+    
+    <label>Vật liệu:</label>
+    <select id="materialSelector">
+      <option value="default">Mặc định</option>
+      <option value="wood">Gỗ</option>
+      <option value="metal">Kim loại</option>
+      <option value="plastic">Nhựa</option>
+      <option value="fabric">Vải</option>
+    </select><br><br>
+    
+    <label>Ánh sáng:</label>
+    <button id="toggleLight">Bật/Tắt đèn</button><br><br>
+    
+    <button id="saveDesign">Lưu thiết kế</button>
+    <button id="loadDesign">Tải thiết kế</button>
+    <button id="screenshot">Chụp ảnh</button>
+    <button id="toggleARMode">Chế độ AR không marker</button>
+  </div>
+
+  <!-- Cảnh AR -->
+  <a-scene embedded arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" 
+           environment="preset: forest; dressingAmount: 500;" 
+           screenshot="width: 1280; height: 720;" 
+           vr-mode-ui="enabled: false">
+    
+    <a-assets>
+      <a-asset-item id="sofaModel" src="models/sofa.glb"></a-asset-item>
+      <a-asset-item id="tableModel" src="models/table.glb"></a-asset-item>
+      <a-asset-item id="chairModel" src="models/chair.glb"></a-asset-item>
+      <a-asset-item id="lampModel" src="models/Lamp.glb"></a-asset-item>
+      
+      <!-- Textures -->
+      <img id="woodTexture" src="assets/textures/wood.jpg">
+      <img id="metalTexture" src="assets/textures/metal.jpg">
+      <img id="plasticTexture" src="assets/textures/plastic.jpg">
+      <img id="fabricTexture" src="assets/textures/fabric.jpg">
+    </a-assets>
+
+    <!-- Marker -->
+    <a-marker preset="hiro">
+      <a-entity id="object" gltf-model="#sofaModel" scale="1 1 1" rotation="0 0 0" drag></a-entity>
+    </a-marker>
+    
+    <!-- Ánh sáng -->
+    <a-light id="ambientLight" type="ambient" color="#ffffff" intensity="0.5"></a-light>
+    <a-light id="directionalLight" type="directional" color="#ffffff" intensity="0.5" position="-1 2 1"></a-light>
+    
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
